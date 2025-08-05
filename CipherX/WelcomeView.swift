@@ -17,7 +17,7 @@ struct WelcomeView: View
             {
                 Rectangle()
                     .ignoresSafeArea()
-                    .foregroundStyle(secondaryColor)
+                    .foregroundStyle(primaryColor)
                 
                 VStack
                 {
@@ -30,7 +30,7 @@ struct WelcomeView: View
                         Text("Generate Keys")
                             .padding()
                             .background(RoundedRectangle(cornerRadius: 8)
-                                .fill(primaryColor)
+                                .fill(secondaryColor)
                             )
                             .foregroundStyle(.white)
                     }
@@ -40,9 +40,9 @@ struct WelcomeView: View
                             .padding()
                             .background(RoundedRectangle(cornerRadius: 8)
                                 .fill(.clear)
-                                .stroke(primaryColor)
+                                .stroke(secondaryColor)
                             )
-                            .foregroundStyle(primaryColor)
+                            .foregroundStyle(secondaryColor)
                     }
                 }
             }

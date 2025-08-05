@@ -15,10 +15,10 @@ struct GenerateKeysView: View
         {
             Rectangle()
                 .ignoresSafeArea()
-                .foregroundStyle(secondaryColor)
+                .foregroundStyle(primaryColor)
             
             Text("Generate Keys")
-                .foregroundStyle(primaryColor)
+                .foregroundStyle(secondaryColor)
         }
     }
 }
