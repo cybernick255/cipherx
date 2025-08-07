@@ -9,13 +9,23 @@ import SwiftUI
 
 struct ContentView: View
 {
+    @EnvironmentObject var userSettings: UserSettings
+    
     var body: some View
     {
-        WelcomeView()
+        if userSettings.keyPair == nil || userSettings.userReady == false
+        {
+            WelcomeView()
+        }
+        else
+        {
+            HomeView()
+        }
     }
 }
 
 #Preview
 {
     ContentView()
+        .environmentObject(UserSettings())
 }
