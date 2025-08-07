@@ -15,10 +15,10 @@ struct ImportKeysView: View
         {
             Rectangle()
                 .ignoresSafeArea()
-                .foregroundStyle(primaryColor)
+                .foregroundStyle(Constants().primaryColor)
             
             Text("Import Keys")
-                .foregroundStyle(secondaryColor)
+                .foregroundStyle(Constants().secondaryColor)
         }
     }
 }

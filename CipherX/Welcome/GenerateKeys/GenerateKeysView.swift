@@ -19,7 +19,7 @@ struct GenerateKeysView: View
         {
             Rectangle()
                 .ignoresSafeArea()
-                .foregroundStyle(primaryColor)
+                .foregroundStyle(Constants().primaryColor)
             
             VStack
             {
@@ -41,7 +41,7 @@ struct GenerateKeysView: View
                     Text("Private Key")
                         .foregroundStyle(.white)
                     Text("\(viewModel.keyPair.privateKey)")
-                        .foregroundStyle(secondaryColor)
+                        .foregroundStyle(Constants().secondaryColor)
                         .onTapGesture
                         {
                             self.viewModel.copyPrivateKeyToClipboard()
@@ -54,7 +54,7 @@ struct GenerateKeysView: View
                     Text("Public Key")
                         .foregroundStyle(.white)
                     Text("\(viewModel.keyPair.publicKey)")
-                        .foregroundStyle(secondaryColor)
+                        .foregroundStyle(Constants().secondaryColor)
                         .onTapGesture
                         {
                             self.viewModel.copyPublicKeyToClipboard()
@@ -68,7 +68,7 @@ struct GenerateKeysView: View
                     Text("Continue")
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 8)
-                            .fill(secondaryColor)
+                            .fill(Constants().secondaryColor)
                         )
                         .foregroundStyle(.white)
                 }

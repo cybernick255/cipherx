@@ -16,7 +16,8 @@ struct CipherXApp: App
         WindowGroup
         {
             ContentView()
+                .preferredColorScheme(.dark)
         }
-        .modelContainer(for: KeyPair.self)
+        .modelContainer(for: [Contact.self, KeyPair.self])
     }
 }
