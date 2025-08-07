@@ -8,6 +8,7 @@
 import Foundation
 import CryptoKit
 
+/// Deprecated.
 class UserSettings: ObservableObject
 {
     @Published var keyPair: KeyPair?

@@ -6,18 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct CipherXApp: App
 {
-    @StateObject var userSettings = UserSettings()
-    
     var body: some Scene
     {
         WindowGroup
         {
             ContentView()
-                .environmentObject(userSettings)
         }
+        .modelContainer(for: KeyPair.self)
     }
 }

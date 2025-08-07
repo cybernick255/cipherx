@@ -7,13 +7,15 @@
 
 import Foundation
 import CryptoKit
+import SwiftData
 
-struct KeyPair: Codable
+@Model
+class KeyPair
 {
     /// Convert to `P384.KeyAgreement.PrivateKey` when using.
-    let privateKey: String
+    private(set) var privateKey: String
     /// Convert to `P384.KeyAgreement.PublicKey` when using.
-    let publicKey: String
+    private(set) var publicKey: String
     
     init()
     {

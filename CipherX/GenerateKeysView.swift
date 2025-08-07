@@ -9,9 +9,9 @@ import SwiftUI
 
 struct GenerateKeysView: View
 {
-    @EnvironmentObject var userSettings: UserSettings
-    @State private var showCopiedMessage: Bool = false
-    @State private var keyPair = KeyPair()
+    @Environment(\.modelContext) var modelContext
+    
+    @State private var viewModel = ViewModel()
     
     var body: some View
     {
@@ -40,11 +40,11 @@ struct GenerateKeysView: View
                 {
                     Text("Private Key")
                         .foregroundStyle(.white)
-                    Text("\(keyPair.privateKey)")
+                    Text("\(viewModel.keyPair.privateKey)")
                         .foregroundStyle(secondaryColor)
                         .onTapGesture
                         {
-                            self.copyPrivateKeyToClipboard()
+                            self.viewModel.copyPrivateKeyToClipboard()
                         }
                 }
                 .padding(.bottom)
@@ -53,17 +53,17 @@ struct GenerateKeysView: View
                 {
                     Text("Public Key")
                         .foregroundStyle(.white)
-                    Text("\(keyPair.publicKey)")
+                    Text("\(viewModel.keyPair.publicKey)")
                         .foregroundStyle(secondaryColor)
                         .onTapGesture
                         {
-                            self.copyPublicKeyToClipboard()
+                            self.viewModel.copyPublicKeyToClipboard()
                         }
                 }
                 
                 Spacer()
                 
-                Button(action: logInUser)
+                Button(action: saveKeyPair)
                 {
                     Text("Continue")
                         .padding()
@@ -75,7 +75,7 @@ struct GenerateKeysView: View
             }
             .padding()
             
-            if showCopiedMessage
+            if viewModel.showCopiedMessage
             {
                 Text("Copied to clipboard!")
                     .foregroundStyle(.white)
@@ -86,38 +86,16 @@ struct GenerateKeysView: View
                     .zIndex(1)
             }
         }
-        .animation(.easeInOut(duration: 0.5), value: showCopiedMessage)
+        .animation(.easeInOut(duration: 0.5), value: viewModel.showCopiedMessage)
     }
     
-    func logInUser()
+    func saveKeyPair()
     {
-        userSettings.keyPair = self.keyPair
-        userSettings.userReady = true
-    }
-    
-    func copyPrivateKeyToClipboard()
-    {
-        UIPasteboard.general.string = keyPair.privateKey
-        showCopiedMessage = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1)
-        {
-            showCopiedMessage = false
-        }
-    }
-    
-    func copyPublicKeyToClipboard()
-    {
-        UIPasteboard.general.string = keyPair.publicKey
-        showCopiedMessage = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1)
-        {
-            showCopiedMessage = false
-        }
+        modelContext.insert(viewModel.keyPair)
     }
 }
 
 #Preview
 {
     GenerateKeysView()
-        .environmentObject(UserSettings())
 }

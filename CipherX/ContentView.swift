@@ -6,14 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View
 {
-    @EnvironmentObject var userSettings: UserSettings
+    @Query var keyPair: [KeyPair]
     
     var body: some View
     {
-        if userSettings.keyPair == nil || userSettings.userReady == false
+        if keyPair.isEmpty
         {
             WelcomeView()
         }
@@ -27,5 +28,4 @@ struct ContentView: View
 #Preview
 {
     ContentView()
-        .environmentObject(UserSettings())
 }
