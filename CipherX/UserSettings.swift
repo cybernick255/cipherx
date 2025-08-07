@@ -18,48 +18,34 @@ class UserSettings: ObservableObject
         self.userReady = false
     }
     
-    func generateKeyPair()
+    func saveKeyPair(keyPair: KeyPair)
     {
-        let privateKey = P384.KeyAgreement.PrivateKey()
+        self.keyPair = keyPair
+    }
+    
+    func importKeyPair(string: String)
+    {
+        let privateKey = generatePrivateKeyFrom(string: string)
         let publicKey = privateKey.publicKey
         
-        self.keyPair = KeyPair(privateKey: privateKey, publicKey: publicKey)
+        let privateKeyString = privateKey.rawRepresentation.base64EncodedString()
+        let publicKeyString = publicKey.rawRepresentation.base64EncodedString()
+        
+        self.keyPair = KeyPair(privateKey: privateKeyString, publicKey: publicKeyString)
     }
     
-    func importKeyPair(string: String) -> KeyPair
+    func generatePrivateKeyFrom(string: String) -> P384.KeyAgreement.PrivateKey
     {
-        let rawData = Data(base64Encoded: string)!
+        let rawPrivateKeyData = Data(base64Encoded: string)!
         
-        let privateKey = try! P384.KeyAgreement.PrivateKey(rawRepresentation: rawData)
-        let publicKey = privateKey.publicKey
-        return KeyPair(privateKey: privateKey, publicKey: publicKey)
+        return try! P384.KeyAgreement.PrivateKey(rawRepresentation: rawPrivateKeyData)
     }
     
-    func generatePrivateKeyString() -> String
+    func generatePublicKeyFrom(string: String) -> P384.KeyAgreement.PublicKey
     {
-        if let keyPair = self.keyPair
-        {
-            return keyPair.privateKey.rawRepresentation.base64EncodedString()
-        }
+        let rawPublicKeyData = Data(base64Encoded: string)!
         
-        return "Not Available"
-    }
-    
-    func generatePublicKeyString() -> String
-    {
-        if let keyPair = self.keyPair
-        {
-            return keyPair.publicKey.rawRepresentation.base64EncodedString()
-        }
-        
-        return "Not Available"
-    }
-    
-    func generatePublicKeyData(string: String) -> P384.KeyAgreement.PublicKey
-    {
-        let rawData = Data(base64Encoded: string)!
-        
-        return try! P384.KeyAgreement.PublicKey(rawRepresentation: rawData)
+        return try! P384.KeyAgreement.PublicKey(rawRepresentation: rawPublicKeyData)
     }
     
     func encryptMessage()

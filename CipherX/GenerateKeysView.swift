@@ -11,6 +11,7 @@ struct GenerateKeysView: View
 {
     @EnvironmentObject var userSettings: UserSettings
     @State private var showCopiedMessage: Bool = false
+    @State private var keyPair = KeyPair()
     
     var body: some View
     {
@@ -39,7 +40,7 @@ struct GenerateKeysView: View
                 {
                     Text("Private Key")
                         .foregroundStyle(.white)
-                    Text("\(userSettings.generatePrivateKeyString())")
+                    Text("\(keyPair.privateKey)")
                         .foregroundStyle(secondaryColor)
                         .onTapGesture
                         {
@@ -52,7 +53,7 @@ struct GenerateKeysView: View
                 {
                     Text("Public Key")
                         .foregroundStyle(.white)
-                    Text("\(userSettings.generatePublicKeyString())")
+                    Text("\(keyPair.publicKey)")
                         .foregroundStyle(secondaryColor)
                         .onTapGesture
                         {
@@ -62,7 +63,7 @@ struct GenerateKeysView: View
                 
                 Spacer()
                 
-                Button(action: { userSettings.userReady = true })
+                Button(action: logInUser)
                 {
                     Text("Continue")
                         .padding()
@@ -85,16 +86,18 @@ struct GenerateKeysView: View
                     .zIndex(1)
             }
         }
-        .onAppear
-        {
-            userSettings.generateKeyPair()
-        }
         .animation(.easeInOut(duration: 0.5), value: showCopiedMessage)
+    }
+    
+    func logInUser()
+    {
+        userSettings.keyPair = self.keyPair
+        userSettings.userReady = true
     }
     
     func copyPrivateKeyToClipboard()
     {
-        UIPasteboard.general.string = userSettings.generatePrivateKeyString()
+        UIPasteboard.general.string = keyPair.privateKey
         showCopiedMessage = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1)
         {
@@ -104,7 +107,7 @@ struct GenerateKeysView: View
     
     func copyPublicKeyToClipboard()
     {
-        UIPasteboard.general.string = userSettings.generatePublicKeyString()
+        UIPasteboard.general.string = keyPair.publicKey
         showCopiedMessage = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1)
         {
