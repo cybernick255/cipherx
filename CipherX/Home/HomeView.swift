@@ -12,7 +12,10 @@ struct HomeView: View
 {
     @Query var contacts: [Contact]
     
+    let options: [String] = ["Decrypt", "Encrypt"]
+    
     @State private var presentSheet: Bool = false
+    @State private var option: String = "Decrypt"
     
     var body: some View
     {
@@ -23,16 +26,36 @@ struct HomeView: View
                 Rectangle()
                     .ignoresSafeArea()
                     .foregroundStyle(Constants().primaryColor)
-                List(contacts)
-                { contact in
-                    NavigationLink(destination: ContactView(contact: contact))
+                VStack
+                {
+                    Picker("Select option", selection: $option)
                     {
-                        Text(contact.name)
+                        ForEach(options, id: \.self)
+                        { option in
+                            Text(option)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding()
+                    
+                    if option == "Decrypt"
+                    {
+                        DecryptView()
+                    }
+                    else
+                    {
+                        List(contacts)
+                        { contact in
+                            NavigationLink(destination: ContactView(contact: contact))
+                            {
+                                Text(contact.name)
+                            }
+                        }
+                        .scrollContentBackground(.hidden)
                     }
                 }
-                .scrollContentBackground(.hidden)
             }
-            .navigationTitle("Contacts")
+            .navigationTitle("Home")
             .sheet(isPresented: $presentSheet)
             {
                 AddContactView()

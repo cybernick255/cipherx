@@ -11,8 +11,6 @@ import SwiftData
 
 struct ContactView: View
 {
-    @Query var keyPairs: [KeyPair]
-    
     let contact: Contact
     
     @State private var encryptedMessage: String = ""
@@ -29,71 +27,61 @@ struct ContactView: View
             {
                 VStack(alignment: .leading)
                 {
-                    Text("Encrypted Message")
-                        .foregroundStyle(Constants().secondaryColor)
-                        .onChange(of: encryptedMessage)
-                        {
-                            self.decryptMessage()
-                        }
-                    TextField("", text: $encryptedMessage)
-                        .background(Color.black)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                .padding(.bottom)
-                
-                VStack(alignment: .leading)
-                {
                     Text("Decrypted Message")
                         .foregroundStyle(Constants().secondaryColor)
                     TextEditor(text: $decryptedMessage)
                         .scrollContentBackground(.hidden)
                         .background(Color.black)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .onChange(of: decryptedMessage)
+                        {
+                            self.encryptMessage()
+                        }
                 }
+                
+                VStack(alignment: .leading)
+                {
+                    Text("Encrypted Message")
+                        .foregroundStyle(Constants().secondaryColor)
+                    TextField("", text: $encryptedMessage)
+                        .background(Color.black)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .padding(.bottom)
             }
             .padding()
         }
         .navigationTitle(contact.name)
     }
     
-    func decryptMessage()
+    func encryptMessage()
     {
-        let encryptedMessage = importEncryptedMessage(encryptedMessage)
-        
-        let privateKey = generatePrivateKeyFrom(string: keyPairs[0].privateKey)
+        let publicKey = try! generatePublicKeyFrom(string: contact.publicKey)
         let ciphersuite = HPKE.Ciphersuite.P384_SHA384_AES_GCM_256
         let protocolInfo = "Messages".data(using: .utf8)!
-        let encapsulatedKey = encryptedMessage.encapsulatedKey
-        
-        var hpkeRecipient =
-        try! HPKE.Recipient(
-            privateKey: privateKey,
+        var hpkeSender = try! HPKE.Sender(
+            recipientKey: publicKey,
             ciphersuite: ciphersuite,
-            info: protocolInfo,
-            encapsulatedKey: encapsulatedKey
-        )
+            info: protocolInfo)
         
-        let decryptedCiphertextData = try! hpkeRecipient.open(encryptedMessage.ciphertext)
-        let decryptedCiphertextString = String(data: decryptedCiphertextData, encoding: .utf8)!
+        let decryptedMessageData = decryptedMessage.data(using: .utf8)!
+        let ciphertext = try! hpkeSender.seal(decryptedMessageData)
+        let encapsulatedKey = hpkeSender.encapsulatedKey
         
-        decryptedMessage = decryptedCiphertextString
+        self.encryptedMessage = exportEncryptedMessage(ciphertext, encapsulatedKey: encapsulatedKey)
     }
     
-    func generatePrivateKeyFrom(string: String) -> P384.KeyAgreement.PrivateKey
+    func generatePublicKeyFrom(string: String) throws -> P384.KeyAgreement.PublicKey
     {
-        let rawPrivateKeyData = Data(base64Encoded: string)!
-        
-        return try! P384.KeyAgreement.PrivateKey(rawRepresentation: rawPrivateKeyData)
+        let data = Data(base64Encoded: string)!
+        return try P384.KeyAgreement.PublicKey(rawRepresentation: data)
     }
     
-    func importEncryptedMessage(_ encryptedMessageString: String) -> EncryptedMessage
+    func exportEncryptedMessage(_ ciphertext: Data, encapsulatedKey: Data) -> String
     {
-        let parts = encryptedMessageString.split(separator: ",")
-        
-        let ciphertextData = Data(base64Encoded: String(parts[0]))!
-        let encapsulatedKeyData = Data(base64Encoded: String(parts[1]))!
-        
-        return EncryptedMessage(ciphertext: ciphertextData, encapsulatedKey: encapsulatedKeyData)
+        let ciphertextString = ciphertext.base64EncodedString()
+        let encapsulatedKeyString = encapsulatedKey.base64EncodedString()
+        return "\(ciphertextString),\(encapsulatedKeyString)"
     }
 }
 
