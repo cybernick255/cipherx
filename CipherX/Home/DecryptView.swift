@@ -27,12 +27,16 @@ struct DecryptView: View
             {
                 VStack(alignment: .leading)
                 {
-                    Text("Encrypted Message")
-                        .foregroundStyle(Constants().secondaryColor)
-                        .onChange(of: encryptedMessage)
+                    HStack
+                    {
+                        Text("Encrypted Message")
+                            .foregroundStyle(Constants().secondaryColor)
+                        Button(action: decryptMessage)
                         {
-                            self.decryptMessage()
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundStyle(.white)
                         }
+                    }
                     TextField("", text: $encryptedMessage)
                         .background(Color.black)
                         .clipShape(RoundedRectangle(cornerRadius: 8))

@@ -10,6 +10,8 @@ import SwiftData
 
 struct HomeView: View
 {
+    @Environment(\.modelContext) var modelContext
+    
     @Query var contacts: [Contact]
     
     let options: [String] = ["Decrypt", "Encrypt"]
@@ -44,12 +46,16 @@ struct HomeView: View
                     }
                     else
                     {
-                        List(contacts)
-                        { contact in
-                            NavigationLink(destination: ContactView(contact: contact))
-                            {
-                                Text(contact.name)
+                        List
+                        {
+                            ForEach(contacts)
+                            { contact in
+                                NavigationLink(destination: ContactView(contact: contact))
+                                {
+                                    Text(contact.name)
+                                }
                             }
+                            .onDelete(perform: deleteContact)
                         }
                         .scrollContentBackground(.hidden)
                     }
@@ -70,6 +76,18 @@ struct HomeView: View
                     }
                 }
             }
+        }
+    }
+    
+    func deleteContact(at offsets: IndexSet)
+    {
+        for offset in offsets
+        {
+            // find this container in our query
+            let contact = contacts[offset]
+
+            // delete it from the context
+            modelContext.delete(contact)
         }
     }
 }
