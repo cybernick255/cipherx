@@ -10,11 +10,11 @@ import SwiftData
 
 struct ContentView: View
 {
-    @Query var keyPair: [KeyPair]
+    @Query var keyPairs: [KeyPair]
     
     var body: some View
     {
-        if keyPair.isEmpty
+        if keyPairs.isEmpty
         {
             WelcomeView()
         }

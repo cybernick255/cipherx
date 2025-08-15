@@ -9,6 +9,7 @@ import Foundation
 import CryptoKit
 import SwiftData
 
+/// To access existing `KeyPair`, use `[0]` on a `KeyPair` array. There should only ever be a max of one `KeyPair` in the array at a time.
 @Model
 class KeyPair
 {

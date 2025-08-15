@@ -13,11 +13,13 @@ struct HomeView: View
     @Environment(\.modelContext) var modelContext
     
     @Query var contacts: [Contact]
+    @Query var keyPairs: [KeyPair]
     
     let options: [String] = ["Decrypt", "Encrypt"]
     
     @State private var presentSheet: Bool = false
     @State private var option: String = "Decrypt"
+    @State private var presentAlert: Bool = false
     
     var body: some View
     {
@@ -62,6 +64,18 @@ struct HomeView: View
                 }
             }
             .navigationTitle("Home")
+            .alert("Erase all data?", isPresented: $presentAlert)
+            {
+                Button("Cancel", role: .cancel) {}
+                Button("Erase", role: .destructive)
+                {
+                    self.eraseData()
+                }
+            }
+        message:
+            {
+                Text("Your keys and contacts will be erased and will be unrecoverable. Are you sure?")
+            }
             .sheet(isPresented: $presentSheet)
             {
                 AddContactView()
@@ -73,6 +87,14 @@ struct HomeView: View
                     Button(action: { presentSheet = true })
                     {
                         Image(systemName: "plus")
+                    }
+                }
+                ToolbarItem(placement: .cancellationAction)
+                {
+                    Button(action: { presentAlert = true })
+                    {
+                        Image(systemName: "trash")
+                            .foregroundStyle(.red)
                     }
                 }
             }
@@ -88,6 +110,19 @@ struct HomeView: View
 
             // delete it from the context
             modelContext.delete(contact)
+        }
+    }
+    
+    func eraseData()
+    {
+        for contact in contacts
+        {
+            modelContext.delete(contact)
+        }
+        
+        for keyPair in keyPairs
+        {
+            modelContext.delete(keyPair)
         }
     }
 }
