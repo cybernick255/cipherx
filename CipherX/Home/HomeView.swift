@@ -13,13 +13,12 @@ struct HomeView: View
     @Environment(\.modelContext) var modelContext
     
     @Query var contacts: [Contact]
-    @Query var keyPairs: [KeyPair]
     
     let options: [String] = ["Decrypt", "Encrypt"]
     
-    @State private var presentSheet: Bool = false
+    @State private var presentSheetAddContact: Bool = false
+    @State private var presentSheetSettings: Bool = false
     @State private var option: String = "Decrypt"
-    @State private var presentAlert: Bool = false
     
     var body: some View
     {
@@ -64,37 +63,28 @@ struct HomeView: View
                 }
             }
             .navigationTitle("Home")
-            .alert("Erase all data?", isPresented: $presentAlert)
-            {
-                Button("Cancel", role: .cancel) {}
-                Button("Erase", role: .destructive)
-                {
-                    self.eraseData()
-                }
-            }
-        message:
-            {
-                Text("Your keys and contacts will be erased and will be unrecoverable. Are you sure?")
-            }
-            .sheet(isPresented: $presentSheet)
+            .sheet(isPresented: $presentSheetAddContact)
             {
                 AddContactView()
+            }
+            .sheet(isPresented: $presentSheetSettings)
+            {
+                SettingsView()
             }
             .toolbar
             {
                 ToolbarItem(placement: .primaryAction)
                 {
-                    Button(action: { presentSheet = true })
+                    Button(action: { presentSheetAddContact = true })
                     {
                         Image(systemName: "plus")
                     }
                 }
                 ToolbarItem(placement: .cancellationAction)
                 {
-                    Button(action: { presentAlert = true })
+                    Button(action: { presentSheetSettings = true })
                     {
-                        Image(systemName: "trash")
-                            .foregroundStyle(.red)
+                        Image(systemName: "gear")
                     }
                 }
             }
@@ -110,19 +100,6 @@ struct HomeView: View
 
             // delete it from the context
             modelContext.delete(contact)
-        }
-    }
-    
-    func eraseData()
-    {
-        for contact in contacts
-        {
-            modelContext.delete(contact)
-        }
-        
-        for keyPair in keyPairs
-        {
-            modelContext.delete(keyPair)
         }
     }
 }
