@@ -33,15 +33,23 @@ struct DecryptView: View
                     {
                         Text("Encrypted Message")
                             .foregroundStyle(Constants().secondaryColor)
+//                        Button(action: {  })
+//                        {
+//                            Image(systemName: "qrcode.viewfinder")
+//                                .foregroundStyle(.white)
+//                        }
+                    }
+                    HStack
+                    {
+                        TextField("", text: $encryptedMessage)
+                            .background(Color.black)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         Button(action: decryptMessage)
                         {
-                            Image(systemName: "arrow.clockwise")
+                            Image(systemName: "lock.open")
                                 .foregroundStyle(.white)
                         }
                     }
-                    TextField("", text: $encryptedMessage)
-                        .background(Color.black)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
                 .padding(.bottom)
                 

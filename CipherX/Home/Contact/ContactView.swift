@@ -40,15 +40,16 @@ struct ContactView: View
                         }
                 }
                 
-                VStack(alignment: .leading)
+                NavigationLink(destination: EncryptedMessageView(encryptedMessage: encryptedMessage))
                 {
-                    Text("Encrypted Message")
-                        .foregroundStyle(Constants().secondaryColor)
-                    TextField("", text: $encryptedMessage)
-                        .background(Color.black)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    Text("View Encrypted Message ->")
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 8)
+                            .fill(Constants().secondaryColor)
+                        )
+                        .foregroundStyle(.white)
                 }
-                .padding(.bottom)
+                .padding(.top)
             }
             .padding()
         }
