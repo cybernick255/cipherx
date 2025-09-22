@@ -25,6 +25,14 @@ struct AddContactView: View
             Form
             {
                 TextField("Name", text: $name)
+                    .onChange(of: name)
+                    { oldValue, newValue in
+                        // Respond to name changes if needed
+                        if newValue.count > 32
+                        {
+                            name = oldValue
+                        }
+                    }
                 TextField("Public Key", text: $publicKey)
                 
                 Button("Save")
