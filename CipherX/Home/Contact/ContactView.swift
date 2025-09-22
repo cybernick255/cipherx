@@ -15,6 +15,7 @@ struct ContactView: View
     
     @State private var encryptedMessage: String = ""
     @State private var decryptedMessage: String = ""
+    @State private var presentSheet: Bool = false
     
     var body: some View
     {
@@ -52,6 +53,20 @@ struct ContactView: View
             .padding()
         }
         .navigationTitle(contact.name)
+        .toolbar
+        {
+            ToolbarItem(placement: .primaryAction)
+            {
+                Button(action: { presentSheet = true })
+                {
+                    Image(systemName: "info.circle")
+                }
+            }
+        }
+        .sheet(isPresented: $presentSheet)
+        {
+            ContactInfoView(contact: contact)
+        }
     }
     
     func encryptMessage()
@@ -87,5 +102,5 @@ struct ContactView: View
 
 #Preview
 {
-    ContactView(contact: Contact(name: "", publicKey: ""))
+    ContactView(contact: Contact.sample)
 }
