@@ -32,6 +32,8 @@ struct ContactInfoView: View
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Constants().primaryColor)
         }
     }
 }

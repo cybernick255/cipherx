@@ -58,6 +58,8 @@ struct SettingsView: View
                 }
                 .listRowBackground(Color.clear)
             }
+            .scrollContentBackground(.hidden)
+            .background(Constants().primaryColor)
             .alert("Erase all data?", isPresented: $presentAlert)
             {
                 Button("Cancel", role: .cancel) {}

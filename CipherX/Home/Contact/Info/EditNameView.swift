@@ -41,6 +41,8 @@ struct EditNameView: View
             }
             .disabled(name.count <= 0 || name.count > 32)
         }
+        .scrollContentBackground(.hidden)
+        .background(Constants().primaryColor)
         .navigationTitle("Edit Contact Name")
     }
 }

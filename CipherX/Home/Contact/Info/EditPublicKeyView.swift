@@ -35,6 +35,8 @@ struct EditPublicKeyView: View
             }
             .disabled(publicKey.count < 128 || publicKey.count > 128)
         }
+        .scrollContentBackground(.hidden)
+        .background(Constants().primaryColor)
         .navigationTitle("Edit Contact Public Key")
         .alert("Error", isPresented: $alertPresented)
         {

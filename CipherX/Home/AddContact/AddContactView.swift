@@ -41,6 +41,8 @@ struct AddContactView: View
                 }
                 .disabled(publicKey.count < 128 || publicKey.count > 128 || name.isEmpty)
             }
+            .scrollContentBackground(.hidden)
+            .background(Constants().primaryColor)
             .navigationTitle("Add Contact")
         }
         .alert("Error", isPresented: $alertPresented)

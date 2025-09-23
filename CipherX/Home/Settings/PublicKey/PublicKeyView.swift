@@ -26,17 +26,34 @@ struct PublicKeyView: View
             {
                 VStack(alignment: .leading)
                 {
-                    Text("Public Key")
-                        .foregroundStyle(.white)
-                    Text("\(keyPairs[0].publicKey)")
-                        .foregroundStyle(Constants().secondaryColor)
-                        .onTapGesture
+                    HStack
+                    {
+                        Spacer()
+                        Button(action: copyPublicKeyToClipboard)
                         {
-                            self.copyPublicKeyToClipboard()
+                            Image(systemName: "document.on.document")
+                                .padding()
+                                .background(RoundedRectangle(cornerRadius: 8)
+                                    .fill(Constants().secondaryColor)
+                                )
+                                .foregroundStyle(.white)
                         }
+                        Spacer()
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(.clear)
+                            .stroke(.white, lineWidth: 2)
+                    )
+                    ScrollView
+                    {
+                        Text("\(keyPairs[0].publicKey)")
+                    }
                 }
                 Spacer()
             }
+            .padding()
             
             if showCopiedMessage
             {

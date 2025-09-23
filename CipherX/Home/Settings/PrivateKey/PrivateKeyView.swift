@@ -27,31 +27,39 @@ struct PrivateKeyView: View
             {
                 Text("SENSITIVE DATA")
                     .font(.title)
+                    .foregroundStyle(Constants().secondaryColor)
                 Text("Only view this key in a secure environment.")
+                    .foregroundStyle(Constants().secondaryColor)
                 
-                VStack(alignment: .leading)
+                HStack
                 {
-                    Text("Private Key")
-                        .foregroundStyle(.white)
-                    Text("\(showPrivateKey ? keyPairs[0].privateKey : "(Hidden)")")
-                        .foregroundStyle(Constants().secondaryColor)
-                        .onTapGesture
-                        {
-                            self.copyPrivateKeyToClipboard()
-                        }
-                    Button(action: {showPrivateKey.toggle()})
+                    Spacer()
+                    Button(action: copyPrivateKeyToClipboard)
                     {
-                        Text("\(showPrivateKey ? "Hide" : "Show")")
+                        Image(systemName: "document.on.document")
                             .padding()
                             .background(RoundedRectangle(cornerRadius: 8)
                                 .fill(Constants().secondaryColor)
                             )
                             .foregroundStyle(.white)
                     }
+                    Spacer()
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(.clear)
+                        .stroke(.white, lineWidth: 2)
+                )
+                
+                VStack(alignment: .leading)
+                {
+                    Text("\(showPrivateKey ? keyPairs[0].privateKey : "(Hidden)")")
                 }
                 .padding(.top)
                 Spacer()
             }
+            .padding()
             
             if showCopiedMessage
             {
@@ -66,6 +74,16 @@ struct PrivateKeyView: View
         }
         .navigationTitle("Private Key")
         .animation(.easeInOut(duration: 0.5), value: showCopiedMessage)
+        .toolbar
+        {
+            ToolbarItem(placement: .primaryAction)
+            {
+                Button(action: { showPrivateKey.toggle() })
+                {
+                    Image(systemName: showPrivateKey ? "eye.slash" : "eye")
+                }
+            }
+        }
     }
     
     func copyPrivateKeyToClipboard()
@@ -79,7 +97,7 @@ struct PrivateKeyView: View
     }
 }
 
-//#Preview
-//{
-//    PrivateKeyView()
-//}
+#Preview
+{
+    PrivateKeyView()
+}
