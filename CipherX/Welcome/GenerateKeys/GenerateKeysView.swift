@@ -36,29 +36,37 @@ struct GenerateKeysView: View
                 
                 Spacer()
                 
-                VStack(alignment: .leading)
+                HStack
                 {
-                    Text("Private Key")
-                        .foregroundStyle(.white)
-                    Text("\(viewModel.keyPair.privateKey)")
-                        .foregroundStyle(Constants().secondaryColor)
-                        .onTapGesture
-                        {
-                            self.viewModel.copyPrivateKeyToClipboard()
-                        }
+                    VStack(alignment: .leading)
+                    {
+                        Text("Private Key")
+                            .foregroundStyle(.white)
+                        Text("\(viewModel.keyPair.privateKey)")
+                            .foregroundStyle(Constants().secondaryColor)
+                            .onTapGesture
+                            {
+                                self.viewModel.copyPrivateKeyToClipboard()
+                            }
+                    }
+                    Spacer()
                 }
                 .padding(.bottom)
                 
-                VStack(alignment: .leading)
+                HStack
                 {
-                    Text("Public Key")
-                        .foregroundStyle(.white)
-                    Text("\(viewModel.keyPair.publicKey)")
-                        .foregroundStyle(Constants().secondaryColor)
-                        .onTapGesture
-                        {
-                            self.viewModel.copyPublicKeyToClipboard()
-                        }
+                    VStack(alignment: .leading)
+                    {
+                        Text("Public Key")
+                            .foregroundStyle(.white)
+                        Text("\(viewModel.keyPair.publicKey)")
+                            .foregroundStyle(Constants().secondaryColor)
+                            .onTapGesture
+                            {
+                                self.viewModel.copyPublicKeyToClipboard()
+                            }
+                    }
+                    Spacer()
                 }
                 
                 Spacer()
@@ -87,6 +95,10 @@ struct GenerateKeysView: View
             }
         }
         .animation(.easeInOut(duration: 0.5), value: viewModel.showCopiedMessage)
+        .onAppear
+        {
+            self.viewModel = ViewModel()
+        }
     }
     
     func saveKeyPair()
