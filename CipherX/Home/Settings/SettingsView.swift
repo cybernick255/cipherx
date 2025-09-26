@@ -37,6 +37,26 @@ struct SettingsView: View
                     }
                 }
                 
+                Section(header: Text("Other"))
+                {
+                    Link(destination: URL(string: "https://github.com/cybernick255/cipherx")!)
+                    {
+                        Label {
+                            Text("Open Source Code")
+                        } icon: {
+                            Image("GitHub_Invertocat_Light")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20) // or 17 to match default symbol size
+                        }
+                    }
+                    
+                    Button(action: sendFeedback)
+                    {
+                        Label("Feedback", systemImage: "envelope")
+                    }
+                }
+                
                 Section
                 {
                     Button(action: {presentAlert = true})
@@ -85,6 +105,19 @@ struct SettingsView: View
         for keyPair in keyPairs
         {
             modelContext.delete(keyPair)
+        }
+    }
+    
+    private func sendFeedback()
+    {
+        let email: String = "cybernick255@proton.me"
+        let subject: String = "CipherX - Feedback"
+        let urlString: String = "mailto:\(email)?subject=\(subject)"
+            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        
+        if let url = URL(string: urlString)
+        {
+            UIApplication.shared.open(url)
         }
     }
 }
