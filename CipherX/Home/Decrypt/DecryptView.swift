@@ -11,7 +11,7 @@ import SwiftData
 
 struct DecryptView: View
 {
-    @Query var keyPairs: [KeyPair]
+    @EnvironmentObject var appViewModel: CipherXAppViewModel
     
     @State private var encryptedMessage: String = ""
     @State private var decryptedMessage: String = ""
@@ -83,7 +83,7 @@ struct DecryptView: View
         do
         {
             let encryptedMessage = try importEncryptedMessage(encryptedMessage)
-            let privateKey = generatePrivateKeyFrom(string: keyPairs[0].privateKey)
+            let privateKey = appViewModel.privateKey!
             let ciphersuite = HPKE.Ciphersuite.P384_SHA384_AES_GCM_256
             let protocolInfo = "Messages".data(using: .utf8)!
             let encapsulatedKey = encryptedMessage.encapsulatedKey

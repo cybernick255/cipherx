@@ -10,7 +10,7 @@ import CryptoKit
 
 struct ImportKeysView: View
 {
-    @Environment(\.modelContext) var modelContext
+    @EnvironmentObject var appViewModel: CipherXAppViewModel
     
     @State private var privateKeyString: String = ""
     @State private var errorMessage: String?
@@ -64,10 +64,8 @@ struct ImportKeysView: View
         do
         {
             let privateKey = try importPrivateKey(privateKeyString)
-            let publicKey = privateKey.publicKey
-            let keyPair = KeyPair(privateKey: privateKey.rawRepresentation.base64EncodedString(), publicKey: publicKey.rawRepresentation.base64EncodedString())
             
-            self.saveKeyPair(keyPair)
+            self.savePrivateKey(privateKey: privateKey)
         }
         catch
         {
@@ -95,9 +93,17 @@ struct ImportKeysView: View
         }
     }
     
-    func saveKeyPair(_ keyPair: KeyPair)
+    func savePrivateKey(privateKey: P384.KeyAgreement.PrivateKey)
     {
-        modelContext.insert(keyPair)
+        do
+        {
+            try appViewModel.storePrivateKeyInKeychain(privateKey: privateKey)
+        }
+        catch
+        {
+            errorMessage = error.localizedDescription
+            alertPresented = true
+        }
     }
     
     enum ImportPrivateKeyError: LocalizedError

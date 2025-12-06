@@ -10,14 +10,15 @@ import SwiftData
 
 struct SettingsView: View
 {
+    @EnvironmentObject var appViewModel: CipherXAppViewModel
     @Environment(\.modelContext) var modelContext
     
     @Query var contacts: [Contact]
-    @Query var keyPairs: [KeyPair]
     
     let appVersion: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     
     @State private var presentAlert: Bool = false
+    @State private var presentErrorAlert: Bool = false
     
     var body: some View
     {
@@ -92,6 +93,13 @@ struct SettingsView: View
             {
                 Text("Your keys and contacts will be erased and will be unrecoverable. Are you sure?")
             }
+            .alert(isPresented: $presentErrorAlert)
+            {
+                Alert(
+                    title: Text("Error"),
+                    message: Text("Failed to delete private key.")
+                )
+            }
         }
     }
     
@@ -102,9 +110,13 @@ struct SettingsView: View
             modelContext.delete(contact)
         }
         
-        for keyPair in keyPairs
+        do
         {
-            modelContext.delete(keyPair)
+            try appViewModel.deletePrivateKeyFromKeychain()
+        }
+        catch
+        {
+            presentErrorAlert = true
         }
     }
     

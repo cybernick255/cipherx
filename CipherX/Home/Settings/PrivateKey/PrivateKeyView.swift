@@ -10,7 +10,7 @@ import SwiftData
 
 struct PrivateKeyView: View
 {
-    @Query var keyPairs: [KeyPair]
+    @EnvironmentObject var appViewModel: CipherXAppViewModel
     
     @State private var showCopiedMessage: Bool = false
     @State private var showPrivateKey: Bool = false
@@ -54,7 +54,7 @@ struct PrivateKeyView: View
                 
                 VStack(alignment: .leading)
                 {
-                    Text("\(showPrivateKey ? keyPairs[0].privateKey : "(Hidden)")")
+                    Text("\(showPrivateKey ? appViewModel.privateKey!.rawRepresentation.base64EncodedString() : "(Hidden)")")
                 }
                 .padding(.top)
                 Spacer()
@@ -88,7 +88,7 @@ struct PrivateKeyView: View
     
     func copyPrivateKeyToClipboard()
     {
-        UIPasteboard.general.string = self.keyPairs[0].privateKey
+        UIPasteboard.general.string = self.appViewModel.privateKey!.rawRepresentation.base64EncodedString()
         self.showCopiedMessage = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1)
         {

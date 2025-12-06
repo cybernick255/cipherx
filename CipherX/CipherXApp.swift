@@ -11,13 +11,16 @@ import SwiftData
 @main
 struct CipherXApp: App
 {
+    @StateObject private var appViewModel = CipherXAppViewModel()
+    
     var body: some Scene
     {
         WindowGroup
         {
             ContentView()
                 .preferredColorScheme(.dark)
+                .environmentObject(appViewModel)
         }
-        .modelContainer(for: [Contact.self, KeyPair.self])
+        .modelContainer(for: [Contact.self])
     }
 }

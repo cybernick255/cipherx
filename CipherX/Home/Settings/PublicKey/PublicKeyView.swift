@@ -10,7 +10,7 @@ import SwiftData
 
 struct PublicKeyView: View
 {
-    @Query var keyPairs: [KeyPair]
+    @EnvironmentObject var appViewModel: CipherXAppViewModel
     
     @State private var showCopiedMessage: Bool = false
     
@@ -48,7 +48,7 @@ struct PublicKeyView: View
                     )
                     ScrollView
                     {
-                        Text("\(keyPairs[0].publicKey)")
+                        Text("\(appViewModel.privateKey!.publicKey.rawRepresentation.base64EncodedString())")
                     }
                 }
                 Spacer()
@@ -72,7 +72,7 @@ struct PublicKeyView: View
     
     func copyPublicKeyToClipboard()
     {
-        UIPasteboard.general.string = self.keyPairs[0].publicKey
+        UIPasteboard.general.string = appViewModel.privateKey!.publicKey.rawRepresentation.base64EncodedString()
         self.showCopiedMessage = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1)
         {

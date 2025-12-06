@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CryptoKit
 
 extension GenerateKeysView
 {
@@ -13,11 +14,31 @@ extension GenerateKeysView
     class ViewModel
     {
         var showCopiedMessage: Bool = false
-        var keyPair = KeyPair()
+        
+        var alertShowing: Bool = false
+        var alertTitle: String = ""
+        var alertMessage: String = ""
+        
+        let privateKey: P384.KeyAgreement.PrivateKey
+        let publicKey: P384.KeyAgreement.PublicKey
+        
+        let privateKeyString: String
+        let publicKeyString: String
+        
+        init()
+        {
+            let privateKey = P384.KeyAgreement.PrivateKey()
+            
+            self.privateKey = privateKey
+            self.publicKey = privateKey.publicKey
+            
+            self.privateKeyString = privateKey.rawRepresentation.base64EncodedString()
+            self.publicKeyString = privateKey.publicKey.rawRepresentation.base64EncodedString()
+        }
         
         func copyPrivateKeyToClipboard()
         {
-            UIPasteboard.general.string = self.keyPair.privateKey
+            UIPasteboard.general.string = self.privateKeyString
             self.showCopiedMessage = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1)
             {
@@ -27,7 +48,7 @@ extension GenerateKeysView
         
         func copyPublicKeyToClipboard()
         {
-            UIPasteboard.general.string = self.keyPair.publicKey
+            UIPasteboard.general.string = self.publicKeyString
             self.showCopiedMessage = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1)
             {

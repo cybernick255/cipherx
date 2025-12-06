@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GenerateKeysView: View
 {
-    @Environment(\.modelContext) var modelContext
+    @EnvironmentObject var appViewModel: CipherXAppViewModel
     
     @State private var viewModel = ViewModel()
     
@@ -42,7 +42,7 @@ struct GenerateKeysView: View
                     {
                         Text("Private Key")
                             .foregroundStyle(.white)
-                        Text("\(viewModel.keyPair.privateKey)")
+                        Text("\(viewModel.privateKeyString)")
                             .foregroundStyle(Constants().secondaryColor)
                             .onTapGesture
                             {
@@ -59,7 +59,7 @@ struct GenerateKeysView: View
                     {
                         Text("Public Key")
                             .foregroundStyle(.white)
-                        Text("\(viewModel.keyPair.publicKey)")
+                        Text("\(viewModel.publicKeyString)")
                             .foregroundStyle(Constants().secondaryColor)
                             .onTapGesture
                             {
@@ -71,7 +71,7 @@ struct GenerateKeysView: View
                 
                 Spacer()
                 
-                Button(action: saveKeyPair)
+                Button(action: savePrivateKey)
                 {
                     Text("Continue")
                         .padding()
@@ -95,15 +95,41 @@ struct GenerateKeysView: View
             }
         }
         .animation(.easeInOut(duration: 0.5), value: viewModel.showCopiedMessage)
+        .alert(isPresented: $viewModel.alertShowing)
+        {
+            Alert(
+                title: Text(viewModel.alertTitle),
+                message: Text(viewModel.alertMessage),
+                dismissButton: .default(
+                    Text("OK"),
+                    action: dismissAlert
+                )
+            )
+        }
         .onAppear
         {
             self.viewModel = ViewModel()
         }
     }
     
-    func saveKeyPair()
+    func savePrivateKey()
     {
-        modelContext.insert(viewModel.keyPair)
+        do
+        {
+            try appViewModel.storePrivateKeyInKeychain(privateKey: viewModel.privateKey)
+        }
+        catch
+        {
+            viewModel.alertTitle = "Error"
+            viewModel.alertMessage = "Failed to save private key."
+            viewModel.alertShowing = true
+        }
+    }
+    
+    func dismissAlert()
+    {
+        viewModel.alertTitle = ""
+        viewModel.alertMessage = ""
     }
 }
 

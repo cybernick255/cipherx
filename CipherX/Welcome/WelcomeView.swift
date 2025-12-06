@@ -9,6 +9,10 @@ import SwiftUI
 
 struct WelcomeView: View
 {
+    @AppStorage("returningUser-1_1_0") private var returningUser110: Bool = false
+    
+    @State private var presentUpdateSheet: Bool = false
+    
     var body: some View
     {
         NavigationStack
@@ -45,6 +49,18 @@ struct WelcomeView: View
                             .foregroundStyle(Constants().secondaryColor)
                     }
                 }
+            }
+            .onAppear
+            {
+                presentUpdateSheet = !returningUser110
+            }
+            .sheet(isPresented: $presentUpdateSheet)
+            {
+                UpdateMessageView()
+                    .onAppear
+                    {
+                        returningUser110 = true
+                    }
             }
         }
     }

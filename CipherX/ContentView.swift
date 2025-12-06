@@ -10,11 +10,11 @@ import SwiftData
 
 struct ContentView: View
 {
-    @Query var keyPairs: [KeyPair]
+    @EnvironmentObject var appViewModel: CipherXAppViewModel
     
     var body: some View
     {
-        if keyPairs.isEmpty
+        if appViewModel.privateKey == nil
         {
             WelcomeView()
         }
